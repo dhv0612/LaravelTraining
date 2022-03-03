@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
+use Mockery\Exception;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,4 +40,16 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Throwable message
+     *
+     * @param $request
+     * @param Exception|Throwable $e
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     */
+//    public function render($request, Exception|Throwable $e)
+//    {
+//        return redirect('admin/login');
+//    }
 }
