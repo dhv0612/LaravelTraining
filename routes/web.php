@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,20 +22,27 @@ Route::get('/', function () {
 });
 
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [\App\Http\Controllers\AuthController::class, 'getLogin']);
-    Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
 
-    Route::get('/register', [\App\Http\Controllers\AuthController::class, 'getRegister']);
-    Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register']);
+    // Admin authenticate
+    Route::get('/login', [AuthController::class, 'get_login'])->name('screen_admin_login');
+    Route::post('/login', [AuthController::class, 'login'])->name('admin_login');
+    Route::get('/register', [AuthController::class, 'get_register'])->name('screen_admin_register');
+    Route::post('/register', [AuthController::class, 'register'])->name('admin_register');
+
     Route::group([
         'middleware' => 'auth:sanctum'
     ], function () {
-        Route::get('/home', [\App\Http\Controllers\UserController::class, 'index']);
-        Route::get('/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
-        Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'create']);
-        Route::get('/add-categories', [\App\Http\Controllers\CategoryController::class, 'index']);
-        Route::post('/add-categories', [\App\Http\Controllers\CategoryController::class, 'store']);
+        // Admin authenticate
+        Route::get('/home', [UserController::class, 'index'])->name('screen_home');
+        Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+        // Category
+        Route::get('/categories', [CategoryController::class, 'create'])->name('screen_list_categories');
+        Route::get('/add-categories', [CategoryController::class, 'index'])->name('screen_add_categories');
+        Route::post('/add-categories', [CategoryController::class, 'store'])->name('add_categories');
+
+        // Post
+        Route::get('/posts', [PostController::class, 'index'])->name('screen_list_posts');
+
     });
 });
-
-

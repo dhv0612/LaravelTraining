@@ -24,7 +24,7 @@
                             @endif
                         </div>
 
-                        <form action="{{URL::to('/admin/login')}}" method="POST">
+                        <form action="{{URL::to(route('admin_login'))}}" method="POST">
                             @csrf
                             <div class="form-group mb-3">
                                 <label for="emailaddress">Email</label>
@@ -38,7 +38,7 @@
 
                             <div class="form-group mb-0 text-center">
                                 <button class="btn btn-primary col-5" type="submit"> Login </button>
-                                <a class="btn btn-warning col-5" href="{{URL::to('/admin/register')}}"> Register </a>
+                                <a class="btn btn-warning col-5" href="{{URL::to(route('screen_admin_register'))}}"> Register </a>
                             </div>
 
                         </form>

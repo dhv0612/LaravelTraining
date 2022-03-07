@@ -11,19 +11,12 @@ use Exception;
 
 class AuthController extends Controller
 {
-    private const STATUS_OK = 200;
-    private const STATUS_ERROR = 500;
-
-    private const ADMIN = 'admin';
-
-    private const ERROR_LOGIN = 'Error in Login';
-
     /**
      * Request screen register
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function getRegister()
+    public function get_register()
     {
         $roles = Role::all();
         return view('admin.register')->with('roles', $roles);
@@ -53,9 +46,10 @@ class AuthController extends Controller
             ]);
             $token = $user->createToken('authToken')->plainTextToken;
 
-            return redirect('admin/login');
+            return redirect(route('screen_admin_login'));
         } catch (Exception $e) {
-            return redirect('/admin/register')
+
+            return redirect(route('screen_admin_register'))
                 ->with('error', $e->getMessage())
                 ->with('roles', $roles);
         }
@@ -66,14 +60,8 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function getLogin()
+    public function get_login()
     {
-        if (Auth::check()) {
-            if ($this->getMyRole() === self::ADMIN) {
-                return redirect('/admin/home');
-            }
-            return redirect('/admin/login')->with('error', "Don't have role");
-        }
         return view('admin.login');
     }
 
@@ -94,20 +82,20 @@ class AuthController extends Controller
             $credentials = request(['email', 'password']);
 
             if (!Auth::attempt($credentials)) {
-                return redirect('/admin/login')->with("error", "Email or password is wrong");
+                return redirect(route('screen_admin_login'))->with("error", "Email or password is wrong");
             }
 
             $user = User::where('email', $request->email)->first();
 
             if (!Hash::check($request->password, $user->password, [])) {
-                throw new Exception(self::ERROR_LOGIN);
+                throw new Exception('Error in Login');
             }
 
             $tokenResult = $user->createToken('authToken')->plainTextToken;
 
-            return redirect('/admin/home')->with('success', 'Login success!');
+            return redirect(route('screen_home'))->with('success', 'Login success!');
         } catch (Exception $e) {
-            return redirect('/admin/login')->with('error', $e->getMessage());
+            return redirect(route('get_login'))->with('error', $e->getMessage());
         }
     }
 
@@ -119,16 +107,6 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::guard('web')->logout();
-        return redirect('/admin/login');
-    }
-
-    /**
-     * Get role auth
-     *
-     * @return mixed
-     */
-    private function getMyRole()
-    {
-        return Auth::user()->role->name;
+        return redirect(route('screen_admin_login'));
     }
 }

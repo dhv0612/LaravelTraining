@@ -8,7 +8,18 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    private const ADMIN = 'admin';
+    private array $user;
+
+    /**
+     * Constructor
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function __construct()
+    {
+        $this->user = app('config')->get('auth.auth');
+    }
 
     /**
      * Get all user
@@ -17,10 +28,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        if ($this->getMyRole() === self::ADMIN) {
-            return view('admin.home');
-        }
-        return redirect('admin/login')->with('error', "Don't have role");
+        return view('admin.home');
     }
 
     /**

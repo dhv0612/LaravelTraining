@@ -2,7 +2,7 @@
 @section('admin_content')
 <div class="col-12">
             <div class="col-12">
-                <form class="shadow p-3 mb-5 bg-transparent rounded" action="{{url('admin/add-categories')}}"
+                <form class="shadow p-3 mb-5 bg-transparent rounded" action="{{URL::to(route('add_categories'))}}"
                       method="POST">
                     @csrf
                     <div class="form-group">

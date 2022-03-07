@@ -48,8 +48,8 @@ class Handler extends ExceptionHandler
      * @param Exception|Throwable $e
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
-//    public function render($request, Exception|Throwable $e)
-//    {
-//        return redirect('admin/login');
-//    }
+    public function render($request, Exception|Throwable $e)
+    {
+//        return redirect(route('screen_admin_login'));
+    }
 }

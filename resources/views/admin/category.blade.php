@@ -4,7 +4,7 @@
     <div class="row mt-5">
 
         <div class="col-6">
-            <a class="btn btn-primary" href="{{URL::to('admin/add-categories')}}">
+            <a class="btn btn-primary" href="{{URL::to(route('screen_add_categories'))}}">
                 Add category
             </a>
         </div>

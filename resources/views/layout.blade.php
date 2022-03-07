@@ -13,10 +13,13 @@
     <nav class="navbar navbar-expand-sm bg-primary navbar-dark justify-content-around">
         <ul class="navbar-nav">
              <li class="nav-item active">
-                <a class="nav-link" href="{{URL::to('/admin/home')}}">Home</a>
+                <a class="nav-link" href="{{URL::to(route('screen_home'))}}">Home</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{{URL::to('/admin/categories')}}">Categories</a>
+                <a class="nav-link" href="{{URL::to(route('screen_list_categories'))}}">Categories</a>
+            </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="{{URL::to(route('screen_list_posts'))}}">Post</a>
             </li>
         </ul>
         <ul class="navbar-nav">
@@ -25,7 +28,7 @@
                     {{auth()->user()->name}}
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{url('admin/logout')}}">Logout</a></a>
+                    <a class="dropdown-item" href="{{URL::to(route('logout'))}}">Logout</a></a>
                 </div>
             </li>
         </ul>

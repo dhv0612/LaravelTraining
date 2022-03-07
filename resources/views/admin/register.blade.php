@@ -14,7 +14,7 @@
             <div class="col-md-8 col-lg-6 col-xl-5">
                 <div class="card bg-pattern">
                     <div class="card-body p-4">
-                         <a href="{{ URL::TO('/admin/login') }}">
+                         <a href="{{ URL::to(route('screen_admin_login')) }}">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
                         </a>
                         <div class="text-center w-75 m-auto">
@@ -27,7 +27,7 @@
                             @endif
                         </div>
 
-                        <form action="{{URL::to('/admin/register')}}" method="POST">
+                        <form action="{{URL::to(route('admin_register'))}}" method="POST">
                             @csrf
                              <div class="form-group mb-3">
                                 <label for="emailaddress">Name</label>

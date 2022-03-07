@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\App;
 
 class CategoryController extends Controller
 {
+    private array $user;
+
+    /**
+     * Constructor
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function __construct()
+    {
+        $this->user = app('config')->get('auth.auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,6 +30,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
+            return redirect(route('screen_home'));
+        }
         $categories = Category::all();
         return view('admin.add-category', compact('categories'));
     }
@@ -25,6 +44,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
+            return redirect(route('screen_home'));
+        }
         $categories = Category::all();
         $nodes = Category::get()->toTree();
         $tree = '';
@@ -38,6 +60,7 @@ class CategoryController extends Controller
         $traverse($nodes);
         $tree = explode('/', $tree);
         return view('admin.category', compact('categories', 'tree'));
+
     }
 
     /**
@@ -48,6 +71,9 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
+            return redirect(route('screen_home'));
+        }
         $category = Category::create([
             'name' => $request->category
         ]);
@@ -59,7 +85,7 @@ class CategoryController extends Controller
             $node->appendNode($category);
         }
 
-        return redirect('admin/categories');
+        return redirect(route('screen_list_categories'));
     }
 
     /**
@@ -105,5 +131,15 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+    }
+
+    /**
+     * Get role auth
+     *
+     * @return mixed
+     */
+    private function getMyRole()
+    {
+        return Auth::user()->role->name;
     }
 }
