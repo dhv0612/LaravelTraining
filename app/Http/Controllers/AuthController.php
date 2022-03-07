@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 
@@ -32,19 +33,13 @@ class AuthController extends Controller
     {
         try {
             $roles = Role::all();
-            $data = $request->validate([
-                'email' => 'email|required',
-                'password' => 'required',
-                'name' => 'required|max:255',
-                'role' => 'required|max:255',
-            ]);
             $user = User::create([
-                'email' => $data['email'],
-                'name' => $data['name'],
-                'password' => Hash::make($data['password']),
-                'role_id' => $data['role'],
+                'email' => $request->email,
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role,
             ]);
-            $token = $user->createToken('authToken')->plainTextToken;
+            $user->createToken('authToken')->plainTextToken;
 
             return redirect(route('screen_admin_login'));
         } catch (Exception $e) {
@@ -91,9 +86,9 @@ class AuthController extends Controller
                 throw new Exception('Error in Login');
             }
 
-            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            $user->createToken('authToken')->plainTextToken;
 
-            return redirect(route('screen_home'))->with('success', 'Login success!');
+            return redirect(route('screen_admin_home'))->with('success', 'Login success!');
         } catch (Exception $e) {
             return redirect(route('get_login'))->with('error', $e->getMessage());
         }
@@ -106,7 +101,19 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        $now = Date::now()->toDateTime();
+        User::where('id', Auth::id())->update(['last_active_datetime' => $now]);
         Auth::guard('web')->logout();
         return redirect(route('screen_admin_login'));
+    }
+
+    /**
+     * Screen home
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+        return view('admin.home');
     }
 }

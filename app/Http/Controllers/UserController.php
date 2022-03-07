@@ -3,41 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    private array $user;
 
     /**
-     * Constructor
+     * Request screen login
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function __construct()
+    public function get_login()
     {
-        $this->user = app('config')->get('auth.auth');
+        return view('user.login');
     }
 
     /**
-     * Get all user
+     * Screen home
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        return view('admin.home');
+        return view('user.home');
     }
 
     /**
-     * Get role auth
+     * Screen list posts
      *
-     * @return mixed
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function getMyRole()
+    public function posts()
     {
-        return Auth::user()->role->name;
+        $posts = Post::all();
+        return view('user.post', compact('posts'));
+    }
+
+    /**
+     * Screen detail post
+     *
+     * @param $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function view_post($id)
+    {
+        $post = Post::with('category')->find($id);
+        return view('user.view-post', compact('post'));
     }
 }

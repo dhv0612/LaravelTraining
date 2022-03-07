@@ -22,6 +22,8 @@ class Post extends Model
     ];
 
     /**
+     * Relation with category
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function category()
@@ -29,10 +31,16 @@ class Post extends Model
         return $this->belongsToMany(Category::class, 'detail_posts', 'post_id', 'category_id')->withTimestamps();
     }
 
+    /**
+     * Relation with detail posts
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function detail_posts()
     {
         return $this->hasMany(Detail_Posts::class, 'id', 'post_id');
     }
+
 
     /**
      * @param $query
@@ -41,7 +49,7 @@ class Post extends Model
      */
     public function scopeCategory($query, $request)
     {
-        if ($request->has('category') && $request->category !== '') {
+        if ($request->has('category') && !is_null($request->category)) {
             $post_id = Detail_Posts::select('post_id')->where('category_id', $request->category)->get()->toArray();
             $query->whereIn('id', $post_id);
         }
@@ -50,7 +58,7 @@ class Post extends Model
 
     public function scopeTitle($query, $request)
     {
-        if ($request->has('title')) {
+        if ($request->has('title') && !is_null($request->title)) {
             $query->where('title', 'LIKE', '%' . $request->title . '%');
         }
         return $query;

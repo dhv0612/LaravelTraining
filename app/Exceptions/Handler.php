@@ -50,6 +50,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception|Throwable $e)
     {
-//        return redirect(route('screen_admin_login'));
+        return redirect(route('screen_admin_login'));
     }
 }

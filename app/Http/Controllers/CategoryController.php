@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\App;
 
 class CategoryController extends Controller
 {
@@ -30,7 +29,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if ($this->getMyRole() !== $this->user['role_admin']) {
+        if ($this->get_my_role() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
         $categories = Category::all();
@@ -44,7 +43,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        if ($this->getMyRole() !== $this->user['role_admin']) {
+        if ($this->get_my_role() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
         $categories = Category::all();
@@ -66,12 +65,12 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        if ($this->getMyRole() !== $this->user['role_admin']) {
+        if ($this->get_my_role() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
         $category = Category::create([
@@ -138,7 +137,7 @@ class CategoryController extends Controller
      *
      * @return mixed
      */
-    private function getMyRole()
+    private function get_my_role()
     {
         return Auth::user()->role->name;
     }
