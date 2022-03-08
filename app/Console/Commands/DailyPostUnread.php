@@ -47,9 +47,8 @@ class DailyPostUnread extends Command
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function handle(Request $request)
+    public function handle()
     {
-        $host = $request->getSchemeAndHttpHost();
         $role_user = app('config')->get('auth.auth');
 
         $admins = User::whereHas('role', function ($q) use ($role_user) {

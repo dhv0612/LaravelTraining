@@ -3,6 +3,6 @@
 <p>List post unread today</p>
 <ul>
     @foreach($posts as $key=>$post)
-    <li><a href= "{{asset(route('screen_user_view_posts', ['id'=>$post->id]))}}">{{$post->title}}</a></li>
+    <li><a href= "{{URL::to(route('screen_user_view_posts', ['id'=>$post->id]))}}">{{$post->title}}</a></li>
     @endforeach
 </ul>
