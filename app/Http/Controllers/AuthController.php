@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Exception;
 
 class AuthController extends Controller
@@ -15,7 +20,7 @@ class AuthController extends Controller
     /**
      * Request screen register
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function get_register()
     {
@@ -27,7 +32,7 @@ class AuthController extends Controller
      * Request function register
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function register(Request $request)
     {
@@ -53,7 +58,7 @@ class AuthController extends Controller
     /**
      * Request screen login
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|Factory|View
      */
     public function get_login()
     {
@@ -64,7 +69,7 @@ class AuthController extends Controller
      * Request login with email & password
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function login(Request $request)
     {
@@ -90,14 +95,14 @@ class AuthController extends Controller
 
             return redirect(route('screen_admin_home'))->with('success', 'Login success!');
         } catch (Exception $e) {
-            return redirect(route('get_login'))->with('error', $e->getMessage());
+            return redirect(route('screen_admin_login'))->with('error', $e->getMessage());
         }
     }
 
     /**
      * Function  Logout
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function logout()
     {
@@ -110,7 +115,7 @@ class AuthController extends Controller
     /**
      * Screen home
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return Application|Factory|View
      */
     public function index()
     {

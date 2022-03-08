@@ -15,7 +15,7 @@
                 <div class="card bg-pattern">
                     <div class="card-body p-4">
                         <div class="text-center w-75 m-auto">
-                            <p class="text-muted mb-4 mt-3">Admin</p>
+                            <p class="text-muted mb-4 mt-3">User</p>
                             @if (session('error'))
                                 <div class="alert alert-dannger alert-dismissible">
                                     <button type="button" class="close" data-dismiss="alert">×</button>
