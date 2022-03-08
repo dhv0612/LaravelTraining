@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 
 class MailToAdminPostUnread extends Mailable
 {
@@ -13,6 +14,7 @@ class MailToAdminPostUnread extends Mailable
 
     public $admin;
     public $posts;
+
     /**
      * Create a new message instance.
      *
@@ -31,7 +33,8 @@ class MailToAdminPostUnread extends Mailable
      */
     public function build()
     {
-        return $this->from('dhv0612@gmail.com')
+        $from_user = Config::get('mail.from.address');
+        return $this->from($from_user)
             ->view('mail.mail-to-admin-post-unread')
             ->with('admin', $this->admin)
             ->with('posts', $this->posts);
