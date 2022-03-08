@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 
 class MailToUserInactive extends Mailable
 {
@@ -30,7 +31,8 @@ class MailToUserInactive extends Mailable
      */
     public function build()
     {
-        return $this->from('dhv0612@gmail.com')
+        $from_user = Config::get('mail.from.address');
+        return $this->from($from_user)
             ->view('mail.mail-to-user-inactive')
             ->with('user', $this->user);
     }
