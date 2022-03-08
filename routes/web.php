@@ -21,6 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route admin
 Route::prefix('admin')->group(function () {
 
     // Admin authenticate
@@ -52,6 +53,7 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+// Route user
 Route::prefix('user')->group(function () {
 
     // Admin authenticate
@@ -68,4 +70,3 @@ Route::prefix('user')->group(function () {
         Route::get('/logout', [UserController::class, 'logout'])->name('user_logout');
     });
 });
-

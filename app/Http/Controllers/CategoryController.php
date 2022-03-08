@@ -17,6 +17,7 @@ use Psr\Container\NotFoundExceptionInterface;
 class CategoryController extends Controller
 {
     private array $user;
+    private Category $categoty;
 
     /**
      * Constructor
@@ -27,6 +28,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->user = app('config')->get('auth.auth');
+        $this->categoty = new Category();
     }
 
     /**
@@ -53,18 +55,10 @@ class CategoryController extends Controller
         if ($this->get_my_role() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
-        $categories = Category::all();
-        $nodes = Category::get()->toTree();
-        $tree = '';
-        $traverse = function ($categories, $prefix = '-') use (&$traverse, &$tree) {
-            foreach ($categories as $category) {
-                $tree .= PHP_EOL . $prefix . ' ' . $category->name . "/";
-                $traverse($category->children, $prefix . '-');
-            }
-        };
 
-        $traverse($nodes);
-        $tree = explode('/', $tree);
+        $categories = Category::all();
+        $tree = $this->categoty->traverse();
+
         return view('admin.category', compact('categories', 'tree'));
 
     }
