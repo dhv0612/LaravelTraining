@@ -16,7 +16,11 @@
                 <label for="exampleFormControlSelect1">Image</label>
                 <img class="form-control" style="height: 150px; width: 300px" src="{{asset (''.$post->image) }}" alt="img">
             </div>
-
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Time read</label>
+                <input class="form-control" type="text" value="{{$time_read->times}}"
+                       aria-label="readonly input example" readonly>
+            </div>
         </div>
     </div>
 @endsection

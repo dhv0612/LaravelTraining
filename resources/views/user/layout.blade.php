@@ -31,7 +31,7 @@
                 </li>
             @else
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{URL::to(route('user_login'))}}">
                         Login
                     </a>
                 </li>

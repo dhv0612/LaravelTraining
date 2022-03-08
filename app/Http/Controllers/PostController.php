@@ -7,6 +7,13 @@ use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class PostController extends Controller
 {
@@ -17,8 +24,8 @@ class PostController extends Controller
     /**
      * Constructor
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function __construct()
     {
@@ -29,7 +36,8 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Application|Factory|View|RedirectResponse|Redirector
      */
     public function index(Request $request)
     {
@@ -45,7 +53,7 @@ class PostController extends Controller
      * Display add post
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View|RedirectResponse|Redirector
      */
     public function create(Request $request)
     {
@@ -60,7 +68,7 @@ class PostController extends Controller
      * Add post
      *
      * @param PostRequest $request
-     * @return void
+     * @return Application|RedirectResponse|Redirector
      */
     public function store(PostRequest $request)
     {
@@ -92,7 +100,7 @@ class PostController extends Controller
      * Screen edit post
      *
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View|RedirectResponse|Redirector
      */
     public function edit($id)
     {
@@ -113,7 +121,7 @@ class PostController extends Controller
      *
      * @param PostRequest $request
      * @param $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return Application|RedirectResponse|Redirector
      */
     public function update(PostRequest $request, $id)
     {
@@ -142,7 +150,7 @@ class PostController extends Controller
      * Delete post
      *
      * @param $id
-     * @return void
+     * @return Application|RedirectResponse|Redirector
      */
     public function delete($id)
     {
