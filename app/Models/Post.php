@@ -41,8 +41,29 @@ class Post extends Model
         return $this->hasMany(Detail_Posts::class, 'id', 'post_id');
     }
 
+    /**
+     * Relation with user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'read_posts', 'post_id', 'user_id')->withTimestamps();
+    }
 
     /**
+     * Relation with read posts
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function read_posts()
+    {
+        return $this->hasMany(Read_Posts::class, 'id', 'post_id');
+    }
+
+    /**
+     * Filter with category
+     *
      * @param $query
      * @param $request
      * @return mixed
@@ -56,6 +77,13 @@ class Post extends Model
         return $query;
     }
 
+    /**
+     * Filter with title
+     *
+     * @param $query
+     * @param $request
+     * @return mixed
+     */
     public function scopeTitle($query, $request)
     {
         if ($request->has('title') && !is_null($request->title)) {

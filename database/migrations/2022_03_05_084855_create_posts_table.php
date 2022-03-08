@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('image')->nullable();
+            $table->date('last_view_datetime')->nullable();
             $table->timestamps();
         });
     }
