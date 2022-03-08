@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 
@@ -88,9 +89,22 @@ class UserController extends Controller
         $user = new User();
         $user->check_user_read_post($id);
         $post = Post::with('category')->find($id);
-        $time_read = Read_Posts::select('times')->where('user_id', Auth::id())->where('post_id', $id)->first();
+        $time_read = '';
+        if (Auth::check()){
+            $time_read = Read_Posts::select('times')->where('user_id', Auth::id())->where('post_id', $id)->first();
+        }
         return view('user.view-post', compact('post', 'time_read'));
     }
 
-
+    /**
+     * Function logout
+     *
+     * @return Application|RedirectResponse|Redirector
+     */
+    public function logout(){
+        $now = Date::now()->toDateTime();
+        User::where('id', Auth::id())->update(['last_active_datetime' => $now]);
+        Auth::guard('web')->logout();
+        return redirect(route('screen_user_home'));
+    }
 }
