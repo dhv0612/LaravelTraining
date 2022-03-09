@@ -3,11 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Mail\MailToAdminPostUnread;
-use App\Mail\MailToUserInactive;
 use App\Models\Post;
-use App\Models\Role;
 use App\Models\User;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
