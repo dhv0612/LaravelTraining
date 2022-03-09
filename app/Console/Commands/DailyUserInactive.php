@@ -50,7 +50,8 @@ class DailyUserInactive extends Command
 
         $users = User::whereHas('role', function ($q) use ($role_user) {
             $q->where('name', $role_user['role_user']);
-        })->where('last_active_datetime', '<', $yesterday)
+        })  ->where('last_active_datetime', '<', $yesterday)
+            ->orWhereNull('last_active_datetime')
             ->get();
 
         if (!empty($users)) {
