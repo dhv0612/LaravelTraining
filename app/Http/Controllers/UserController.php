@@ -74,7 +74,7 @@ class UserController extends Controller
      */
     public function posts()
     {
-        $posts = Post::all();
+        $posts = Post::orderBy('id', 'DESC')->get();
         return view('user.post', compact('posts'));
     }
 

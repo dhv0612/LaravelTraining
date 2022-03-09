@@ -18,5 +18,6 @@ class Read_Posts extends Model
      */
     protected $fillable = [
         'times',
+        'get_voucher',
     ];
 }

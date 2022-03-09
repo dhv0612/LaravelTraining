@@ -79,9 +79,7 @@ class CategoryController extends Controller
         ]);
 
         if ($request->parent && $request->parent !== null) {
-            //  Here we define the parent for new created category
             $node = Category::find($request->parent);
-
             $node->appendNode($category);
         }
 

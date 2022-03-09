@@ -82,13 +82,13 @@ class User extends Authenticatable
         // Check auth read post
         if (Auth::check()) {
             $userRead = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
-            if (!is_null($userRead)) {
-                $userRead->times = $userRead->times + 1;
-                $userRead->save();
-            } else {
+            if (is_null($userRead)) {
                 $user = User::find(Auth::id());
                 $user->post()->attach($id);
+                $userRead = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
             }
+            $userRead->times = $userRead->times + 1;
+            $userRead->save();
         }
     }
 }

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained('posts');
             $table->foreignId('user_id')->constrained('users');
-            $table->integer('times')->default(1);
+            $table->integer('times')->default(0);
+            $table->boolean('get_voucher')->default(0);
             $table->timestamps();
         });
     }
