@@ -21,12 +21,27 @@
                      alt="img">
             </div>
 
-            @if($time_read)
+            @if($detail_read_user)
                 <div class="form-group">
                     <label for="exampleFormControlSelect1">Time read</label>
-                    <input class="form-control" type="text" value="{{$time_read->times}}"
+                    <input class="form-control" type="text" value="{{$detail_read_user->times}}"
                            aria-label="readonly input example" readonly>
                 </div>
+            @endif
+
+            @if ($post->voucher_enabled && Auth::check())
+                @if ($count_get_voucher!=='' && $post->voucher_quantity <= $count_get_voucher)
+                    <p>There is no more available voucher.</p>
+                @else
+                    @if (!$detail_read_user->get_voucher)
+                        <a href="{{URL::to(route('user_get_voucher', ['id'=>$post->id]))}}"
+                           class="btn btn-primary">Get voucher</a>
+                    @else
+                        <a href="#" class="btn btn-secondary"
+                           onclick="return alert('You got the voucher from this post')">Get
+                            voucher</a>
+                    @endif
+                @endif
             @endif
 
         </div>

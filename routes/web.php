@@ -68,5 +68,6 @@ Route::prefix('user')->group(function () {
         'middleware' => 'auth:sanctum'
     ], function () {
         Route::get('/logout', [UserController::class, 'logout'])->name('user_logout');
+        Route::get('/get-voucher/{id}', [UserController::class, 'get_voucher'])->name('user_get_voucher');
     });
 });

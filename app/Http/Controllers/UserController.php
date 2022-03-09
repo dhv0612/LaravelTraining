@@ -87,13 +87,16 @@ class UserController extends Controller
     public function view_post($id)
     {
         $user = new User();
+        $user->update_last_view_time($id);
         $user->check_user_read_post($id);
         $post = Post::with('category')->find($id);
-        $time_read = '';
-        if (Auth::check()){
-            $time_read = Read_Posts::select('times')->where('user_id', Auth::id())->where('post_id', $id)->first();
+        $detail_read_user = '';
+        $count_get_voucher = '';
+        if (Auth::check()) {
+            $detail_read_user = Read_Posts::select('times', 'get_voucher')->where('user_id', Auth::id())->where('post_id', $id)->first();
+            $count_get_voucher = Read_Posts::where('post_id', $id)->where('get_voucher', 1)->count();
         }
-        return view('user.view-post', compact('post', 'time_read'));
+        return view('user.view-post', compact('post', 'detail_read_user', 'count_get_voucher'));
     }
 
     /**
@@ -101,10 +104,24 @@ class UserController extends Controller
      *
      * @return Application|RedirectResponse|Redirector
      */
-    public function logout(){
+    public function logout()
+    {
         $now = Date::now()->toDateTime();
         User::where('id', Auth::id())->update(['last_active_datetime' => $now]);
         Auth::guard('web')->logout();
         return redirect(route('screen_user_home'));
+    }
+
+    /**
+     * Get voucher
+     *
+     * @param $id
+     * @return RedirectResponse
+     */
+    public function get_voucher($id)
+    {
+        $user = new User();
+        $user->get_voucher($id);
+        return redirect()->back();
     }
 }
