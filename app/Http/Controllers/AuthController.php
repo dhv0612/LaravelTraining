@@ -43,6 +43,7 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'password' => Hash::make($request->password),
                 'role_id' => $request->role,
+                'last_active_datetime' => Date::now()->toDateTime(),
             ]);
             $user->createToken('authToken')->plainTextToken;
 
@@ -74,11 +75,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $request->validate([
-                'email' => 'email|required',
-                'password' => 'required'
-            ]);
-
             $credentials = request(['email', 'password']);
 
             if (!Auth::attempt($credentials)) {
@@ -100,7 +96,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Function  Logout
+     * Function logout
      *
      * @return Application|RedirectResponse|Redirector
      */

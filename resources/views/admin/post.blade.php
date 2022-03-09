@@ -8,6 +8,7 @@
             </a>
         </div>
         <form class="row col-6 container" action="{{URL::to(route('screen_list_posts'))}}" method="GET">
+
             <div class="col-4 text-center">
                 <div class="d-flex">
                     <div class="mx-auto">
@@ -35,6 +36,7 @@
                     </div>
                 </div>
             </div>
+
         </form>
     </div>
 
@@ -83,4 +85,5 @@
             </div>
         </div>
     </div>
+
 @endsection

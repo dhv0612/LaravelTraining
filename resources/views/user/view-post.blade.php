@@ -1,5 +1,6 @@
 @extends('user.layout')
 @section('user_content')
+
     <div class="col-12">
         <div class="col-12">
             <div class="form-group">
@@ -7,20 +8,28 @@
                 <input class="form-control" type="text" value="{{$post->title}}" aria-label="readonly input example"
                        readonly>
             </div>
+
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Description</label>
                 <input class="form-control" type="text" value="{{$post->description}}"
                        aria-label="readonly input example" readonly>
             </div>
+
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Image</label>
-                <img class="form-control" style="height: 150px; width: 300px" src="{{asset (''.$post->image) }}" alt="img">
+                <img class="form-control" style="height: 150px; width: 300px" src="{{asset (''.$post->image) }}"
+                     alt="img">
             </div>
-            <div class="form-group">
-                <label for="exampleFormControlSelect1">Time read</label>
-                <input class="form-control" type="text" value="{{$time_read->times}}"
-                       aria-label="readonly input example" readonly>
-            </div>
+
+            @if($time_read)
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Time read</label>
+                    <input class="form-control" type="text" value="{{$time_read->times}}"
+                           aria-label="readonly input example" readonly>
+                </div>
+            @endif
+
         </div>
     </div>
+
 @endsection
