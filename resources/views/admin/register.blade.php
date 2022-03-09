@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 </head>
+
 <body>
     <div class="container">
         <div class="row justify-content-center mt-5">
@@ -29,6 +30,7 @@
 
                         <form action="{{URL::to(route('admin_register'))}}" method="POST">
                             @csrf
+
                              <div class="form-group mb-3">
                                 <label for="emailaddress">Name</label>
                                 <input class="form-control" type="text"  name="name" required="" placeholder="Your name">
@@ -63,19 +65,14 @@
 
                     </div>
                 </div>
-
-                <div class="row mt-3">
-                    <div class="col-12 text-center">
-
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+
 </html>

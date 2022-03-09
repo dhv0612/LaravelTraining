@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
@@ -24,7 +26,7 @@ class Post extends Model
     /**
      * Relation with category
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function category()
     {
@@ -34,7 +36,7 @@ class Post extends Model
     /**
      * Relation with detail posts
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function detail_posts()
     {
@@ -44,7 +46,7 @@ class Post extends Model
     /**
      * Relation with user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return
      */
     public function user()
     {
@@ -54,7 +56,7 @@ class Post extends Model
     /**
      * Relation with read posts
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function read_posts()
     {

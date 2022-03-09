@@ -2,8 +2,9 @@
 
 namespace App\Mail;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
@@ -12,8 +13,8 @@ class MailToAdminPostUnread extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $admin;
-    public $posts;
+    private $admin;
+    private $posts;
 
     /**
      * Create a new message instance.
