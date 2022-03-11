@@ -88,7 +88,8 @@ class AuthController extends Controller
             }
 
             $user->createToken('authToken')->plainTextToken;
-
+            $now = Date::now()->toDateTime();
+            User::where('id', Auth::id())->update(['last_active_datetime' => $now]);
             return redirect(route('screen_admin_home'))->with('success', 'Login success!');
         } catch (Exception $e) {
             return redirect(route('screen_admin_login'))->with('error', $e->getMessage());
