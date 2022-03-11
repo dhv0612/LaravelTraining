@@ -18,8 +18,8 @@ use Psr\Container\NotFoundExceptionInterface;
 class PostController extends Controller
 {
     private array $url_post;
-
     private array $user;
+    private Post $post_model;
 
     /**
      * Constructor
@@ -31,6 +31,7 @@ class PostController extends Controller
     {
         $this->url_post = app('config')->get('appication.post');
         $this->user = app('config')->get('auth.auth');
+        $this->post_model = new Post();
     }
 
     /**
@@ -42,10 +43,11 @@ class PostController extends Controller
     public function index(Request $request)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
         $categories = Category::all();
         $posts = Post::query()->category($request)->title($request)->orderBy('id', 'DESC')->paginate(5);
+
         return view('admin.post', compact('posts', 'categories'));
     }
 
@@ -58,9 +60,10 @@ class PostController extends Controller
     public function create(Request $request)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
         $categories = Category::all();
+
         return view('admin.add-post', compact('categories'));
     }
 
@@ -73,25 +76,9 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
-        $post = new Post();
-        $post->title = $request->title;
-        $post->description = $request->description;
-        if ($request->hasFile('image')) {
-            $get_image = $request->file('image');
-
-            $new_image = date('Ymdhis') . '.' . $get_image->getClientOriginalExtension();
-            $post->image = $this->url_post['url'] . $new_image;
-            $get_image->move($this->url_post['url'], $new_image);
-        }
-
-        $post->save();
-
-        $list_categories = $request->category;
-        foreach ($list_categories as $category) {
-            $post->category()->attach($category);
-        }
+        $this->post_model->add_post($request);
 
         return redirect(route('screen_list_posts'));
     }
@@ -105,14 +92,16 @@ class PostController extends Controller
     public function edit($id)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
         $post = Post::with('category')->find($id);
         $detail_post = [];
+
         foreach ($post->category as $key => $post_cateID) {
             $detail_post[] = $post_cateID->id;
         }
         $categories = Category::all();
+
         return view('admin.edit-post', compact('post', 'categories', 'detail_post'));
     }
 
@@ -126,22 +115,9 @@ class PostController extends Controller
     public function update(PostRequest $request, $id)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
-        $post = Post::find($id);
-        $post->title = $request->title;
-        $post->description = $request->description;
-        if ($request->hasFile('image')) {
-            $get_image = $request->file('image');
-
-            $new_image = date('Ymdhis') . '.' . $get_image->getClientOriginalExtension();
-            $post->image = $this->url_post['url'] . $new_image;
-            $get_image->move($this->url_post['url'], $new_image);
-        }
-
-        $post->save();
-        $list_categories = $request->category;
-        $post->category()->sync($list_categories);
+        $this->post_model->update_post($request, $id);
 
         return redirect(route('screen_list_posts'));
     }
@@ -155,11 +131,10 @@ class PostController extends Controller
     public function delete($id)
     {
         if ($this->get_my_role() !== $this->user['role_admin']) {
-            return redirect(route('screen_home'));
+            return redirect(route('screen_admin_home'));
         }
-        $post = Post::find($id);
-        $post->category()->detach();
-        $post->delete();
+        $this->post_model->delete_post($id);
+
         return redirect()->back();
     }
 

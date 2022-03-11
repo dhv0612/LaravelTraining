@@ -25,14 +25,28 @@
 
                 <div class="form-group">
                     <label for="exampleFormControlSelect1">Category</label>
-                    <div class="container row">
+                    <div class="container row form-check form-switch" style="display: flex">
                         @foreach($categories as $category)
                             <div class="input_group col-4">
-                                <input type="checkbox" name="category[]" value="{{$category->id}}">
+                                <input class="form-check-input" type="checkbox" name="category[]"
+                                       value="{{$category->id}}" id="flexSwitchCheckChecked">
                                 <label>{{$category->name}}</label>
                             </div>
                         @endforeach
                     </div>
+                </div>
+
+                <div class="form-group">
+                   <label>Get voucher </label>
+                    <div class="form-check form-switch form-group">
+                        <input class="form-check-input" name="voucher_enabled" type="checkbox" id="flexSwitchCheckChecked">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Quantity voucher</label>
+                    <input type="number" name="voucher_quantity" class="form-control" placeholder="Quantity voucher">
+
                 </div>
 
                 <div class="text-center">

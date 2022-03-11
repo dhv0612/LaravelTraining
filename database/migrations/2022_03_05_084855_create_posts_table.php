@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('image')->nullable();
             $table->date('last_view_datetime')->nullable();
+            $table->boolean('voucher_enabled')->default(0);
+            $table->integer('voucher_quantity')->default(0);
             $table->timestamps();
         });
     }

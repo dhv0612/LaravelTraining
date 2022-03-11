@@ -68,6 +68,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Function update last view time of post
+     *
+     * @param $id
+     * @return void
+     */
+    public function update_last_view_time($id)
+    {
+        $now = Date::now()->toDate();
+        Post::where('id', $id)->update(['last_view_datetime' => $now]);
+    }
+
+    /**
      * Check user read post
      *
      * @param $id
@@ -75,19 +87,44 @@ class User extends Authenticatable
      */
     public function check_user_read_post($id)
     {
-        // Update time user view post
-        $now = Date::now()->toDate();
-        Post::where('id', $id)->update(['last_view_datetime' => $now]);
-
-        // Check auth read post
         if (Auth::check()) {
-            $userRead = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
-            if (!is_null($userRead)) {
-                $userRead->times = $userRead->times + 1;
-                $userRead->save();
-            } else {
+            $user_read = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
+            if (is_null($user_read)) {
                 $user = User::find(Auth::id());
                 $user->post()->attach($id);
+                $user_read = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
+            }
+            $user_read->times = $user_read->times + 1;
+            $user_read->save();
+        }
+    }
+
+    /**
+     * Function get voucher
+     *
+     * @param $id
+     * @return void
+     */
+    public function get_voucher($id)
+    {
+        $post = Post::find($id);
+        $check_count_voucher = Read_Posts::where('post_id', $id)->where('get_voucher', '1')->count();
+
+        if (Auth::check() &&
+            $post->voucher_enabled &&
+            $check_count_voucher < $post->voucher_quantity) {
+
+            $check_voucher_user = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
+
+            if (is_null($check_voucher_user)) {
+                $user = User::find(Auth::id());
+                $user->post()->attach($id);
+                $check_voucher_user = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
+            }
+
+            if (!$check_voucher_user->get_voucher) {
+                $check_voucher_user->get_voucher = true;
+                $check_voucher_user->save();
             }
         }
     }
