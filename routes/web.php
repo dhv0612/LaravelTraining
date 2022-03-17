@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SendMailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,3 +72,6 @@ Route::prefix('user')->group(function () {
         Route::get('/get-voucher/{id}', [UserController::class, 'get_voucher'])->name('user_get_voucher');
     });
 });
+
+Route::get('/send-mail', [SendMailController::class, 'index'])->name('send-mail-3rd');
+

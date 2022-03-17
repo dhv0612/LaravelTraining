@@ -11,6 +11,9 @@ class Category extends Model
 {
     use HasFactory, NodeTrait;
 
+    /**
+     * @var string
+     */
     protected $table = 'categories';
 
     /**
