@@ -179,8 +179,8 @@ class Post extends Model
     {
         $post = Post::with('category')->find($id);
         $now = Date::now()->toDateTime();
-
         $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
+
         if (is_null($post->editing_user_id) ||
             is_null($post->last_time_request_edit)
         ) {
@@ -201,6 +201,33 @@ class Post extends Model
             $post->save();
             return true;
         }
+    }
+
+    /**
+     * Can me edit post
+     *
+     * @param $event_id
+     * @return bool
+     */
+    public function api_can_me_edit($event_id)
+    {
+        $post = Post::with('category')->find($event_id);
+        $now = Date::now()->toDateTime();
+        $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
+        if (is_null($post->editing_user_id) ||
+            is_null($post->last_time_request_edit)
+        ) {
+            return true;
+        }else {
+            if ($last_time_edit >= $now) {
+                if (Auth::id() === $post->editing_user_id) {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+
     }
 
     /**
