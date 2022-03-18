@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('last_view_datetime')->nullable();
             $table->boolean('voucher_enabled')->default(0);
             $table->integer('voucher_quantity')->default(0);
+            $table->integer('editing_user_id')->nullable();
+            $table->timestamp('last_time_request_edit')->nullable();
             $table->timestamps();
         });
     }
