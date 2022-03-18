@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
+use Illuminate\Http\JsonResponse;
 use Exception;
 
 class AuthController extends Controller
@@ -117,5 +118,24 @@ class AuthController extends Controller
     public function index()
     {
         return view('admin.home');
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function login_api(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (!Hash::check($request->password, $user->password, [])) {
+            throw new Exception('Error in Login');
+        }
+
+        $token = $user->createToken('authToken')->plainTextToken;
+        return response()->json([
+            'token' => $token,
+        ]);
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
@@ -95,8 +96,13 @@ class PostController extends Controller
             return redirect(route('screen_admin_home'));
         }
         $post = Post::with('category')->find($id);
-        $detail_post = [];
+        $check = $this->post_model->check_edit_post($id);
 
+        if (!$check) {
+            return redirect(route('screen_list_posts'));
+        }
+
+        $detail_post = [];
         foreach ($post->category as $key => $post_cateID) {
             $detail_post[] = $post_cateID->id;
         }
@@ -136,6 +142,72 @@ class PostController extends Controller
         $this->post_model->delete_post($id);
 
         return redirect()->back();
+    }
+
+    /**
+     * Check edit
+     *
+     * @param $event_id
+     * @return JsonResponse
+     */
+    public function editable($event_id)
+    {
+        $check = $this->post_model->api_check_me_edit($event_id);
+        if (!$check) {
+            return response()->json([
+                'message' => '',
+                'data' => '',
+                'code' => 409,
+            ], 409);
+        }
+
+        return response()->json([
+            'message' => '',
+            'data' => '',
+            'code' => 200,
+        ], 200);
+    }
+
+    /**
+     * Update post
+     *
+     * @param Request $request
+     * @param $event_id
+     * @return JsonResponse
+     */
+    public function release(Request $request, $event_id)
+    {
+        $check = $this->post_model->update_post($request, $event_id);
+        if (!$check) {
+            return response()->json([
+                'message' => '',
+                'data' => '',
+                'code' => 409,
+            ], 409);
+        }
+        return response()->json([
+            'message' => '',
+            'data' => '',
+            'code' => 200,
+        ], 200);
+    }
+
+    public function maintain($event_id)
+    {
+        $check = $this->post_model->api_check_me_edit($event_id);
+        if (!$check) {
+            return response()->json([
+                'message' => 'Someone is editing',
+                'data' => '',
+                'code' => 409,
+            ], 409);
+        }
+
+        return response()->json([
+            'message' => '',
+            'data' => '',
+            'code' => 200,
+        ], 200);
     }
 
     /**

@@ -57,7 +57,7 @@ Route::prefix('admin')->group(function () {
 // Route user
 Route::prefix('user')->group(function () {
 
-    // Admin authenticate
+    // User authenticate
     Route::get('/login', [UserController::class, 'get_login'])->name('screen_user_login');
     Route::post('/login', [UserController::class, 'login'])->name('user_login');
 
