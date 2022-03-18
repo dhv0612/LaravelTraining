@@ -218,11 +218,8 @@ class Post extends Model
             is_null($post->last_time_request_edit)
         ) {
             return true;
-        }else {
-            if ($last_time_edit >= $now) {
-                if (Auth::id() === $post->editing_user_id) {
-                    return true;
-                }
+        } else {
+            if ($last_time_edit < $now && Auth::id() !== $post->editing_user_id) {
                 return false;
             }
             return true;
@@ -243,7 +240,7 @@ class Post extends Model
         $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
         $now = Date::now()->toDateTime();
 
-        if ($post->editing_user_id !== Auth::id() || $last_time_edit >= $now) {
+        if ($post->editing_user_id !== Auth::id() || $last_time_edit <= $now) {
             return false;
         }
 
@@ -285,6 +282,11 @@ class Post extends Model
     public function delete_post($id)
     {
         $post = Post::find($id);
+        $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
+        $now = Date::now()->toDateTime();
+        if ($last_time_edit >= $now && $post->editing_user_id !== Auth::id()) {
+            return false;
+        }
         $post->category()->detach();
         $post->user()->detach();
         if (File::exists($post->image)) {
