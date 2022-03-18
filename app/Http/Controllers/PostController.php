@@ -194,7 +194,7 @@ class PostController extends Controller
 
     public function maintain($event_id)
     {
-        $check = $this->post_model->api_check_me_edit($event_id);
+        $check = $this->post_model->api_can_me_edit($event_id);
         if (!$check) {
             return response()->json([
                 'message' => 'Someone is editing',
