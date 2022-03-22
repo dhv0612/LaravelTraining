@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login',[AuthController::class,'login_api']);
+Route::post('login',[AuthController::class,'loginApi']);
 
 Route::group([
     'middleware' => 'auth:sanctum'

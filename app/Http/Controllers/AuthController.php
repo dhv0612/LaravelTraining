@@ -23,7 +23,7 @@ class AuthController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function get_register()
+    public function getRegister()
     {
         $roles = Role::all();
         return view('admin.register')->with('roles', $roles);
@@ -62,7 +62,7 @@ class AuthController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function get_login()
+    public function getLogin()
     {
         return view('admin.login');
     }
@@ -125,7 +125,7 @@ class AuthController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function login_api(Request $request)
+    public function loginApi(Request $request)
     {
         $user = User::where('email', $request->email)->first();
 

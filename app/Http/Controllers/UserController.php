@@ -24,7 +24,7 @@ class UserController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function get_login()
+    public function getLogin()
     {
         return view('user.login');
     }
@@ -84,11 +84,11 @@ class UserController extends Controller
      * @param $id
      * @return Application|Factory|View
      */
-    public function view_post($id)
+    public function viewPost($id)
     {
         $user = new User();
-        $user->update_last_view_time($id);
-        $user->check_user_read_post($id);
+        $user->updateLastViewTime($id);
+        $user->checkUserReadPost($id);
         $post = Post::with('category')->find($id);
         $detail_read_user = '';
         $count_get_voucher = '';
@@ -118,10 +118,10 @@ class UserController extends Controller
      * @param $id
      * @return RedirectResponse
      */
-    public function get_voucher($id)
+    public function getVoucher($id)
     {
         $user = new User();
-        $user->get_voucher($id);
+        $user->getVoucherToMe($id);
         return redirect()->back();
     }
 }

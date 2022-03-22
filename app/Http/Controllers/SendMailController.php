@@ -24,21 +24,14 @@ class SendMailController extends Controller
 
     public function index()
     {
+        $this->sendMail = new SendMail();
         $status = Config::get('appication.send_mail.status');
-        $this->sendMail->set_up_sendmail($status['pending']);
-        $mails = $this->sendMail->mail_user();
+        $this->sendMail->setUpSendMail($status['pending']);
+        $mails = $this->sendMail->mailUser();
+
         foreach ($mails as $mail) {
-            try {
-                $this->sendMail->change_status($mail->id, $status['sending']);
-
-                $send_mail = new SendMailToUser($mail->user->email, $mail->title);
-                Queue::push($send_mail);
-
-                $this->sendMail->change_status($mail->id, $status['done']);
-
-            } catch (Exception $e) {
-                $this->sendMail->change_status($mail->id, $status['error'], $e->getMessage());
-            }
+            $send_mail = new SendMailToUser($mail->user->email, $mail->title, $mail->id);
+            Queue::push($send_mail);
         }
 
         return redirect(route('screen_user_home'));

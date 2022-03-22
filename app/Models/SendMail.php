@@ -47,7 +47,7 @@ class SendMail extends Model
      *
      * @return Builder[]|Collection
      */
-    public function mail_user()
+    public function mailUser()
     {
         $status = Config::get('appication.send_mail.status');
         return SendMail::with('user')->where('status', $status['pending'])->get();
@@ -58,7 +58,7 @@ class SendMail extends Model
      *
      * @throws Exception
      */
-    public function set_up_sendmail($status)
+    public function setUpSendMail($status)
     {
         DB::beginTransaction();
         try {
@@ -85,12 +85,12 @@ class SendMail extends Model
      * @param $message
      * @return void
      */
-    public function change_status($id, $status, $message = null)
+    public function changeStatus($id, $status, $message = null)
     {
         $data['status'] = $status;
         if ($message) {
             $data['message'] = $message;
         }
-        SendMail::where('id', $id)->update($data);
+        Db::table('send_mail')->where('id', $id)->update($data);
     }
 }

@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Redis;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -122,7 +125,7 @@ class Post extends Model
      * @param $request
      * @return void
      */
-    public function add_post($request)
+    public function addPost($request)
     {
         $post = new Post();
         $post->title = $request->title;
@@ -151,22 +154,25 @@ class Post extends Model
         }
     }
 
-
     /**
      * Check me can edit post
      *
      * @param $event_id
      * @return bool
      */
-    public function api_check_me_edit($event_id)
+    public function apiCheckMeEdit($event_id)
     {
-        $post = Post::find($event_id);
-        $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
-        $now = Date::now()->toDateTime();
-        if ($post->editing_user_id === Auth::id() && $last_time_edit >= $now) {
-            return true;
+        $post = Post::lockForUpdate()->where('id', $event_id)->first();
+
+        if (!is_null($post->editing_user_id) && !is_null($post->last_time_request_edit)) {
+            $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
+            $now = Date::now()->toDateTime();
+            if ($post->editing_user_id !== Auth::id() && $last_time_edit >= $now) {
+                return false;
+            }
         }
-        return false;
+        $this->giveRoleEdit($post);
+        return true;
     }
 
     /**
@@ -175,30 +181,26 @@ class Post extends Model
      * @param $id
      * @return bool
      */
-    public function check_edit_post($id)
+    public function checkEditPost($id)
     {
-        $post = Post::with('category')->find($id);
+        $post = Post::lockForUpdate()->where('id', $id)->first();
+
         $now = Date::now()->toDateTime();
-        $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
 
         if (is_null($post->editing_user_id) ||
             is_null($post->last_time_request_edit)
         ) {
-            $post->editing_user_id = Auth::id();
-            $post->last_time_request_edit = $now;
-            $post->save();
+            $this->giveRoleEdit($post);
             return true;
         } else {
+            $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
             if ($last_time_edit >= $now) {
                 if (Auth::id() === $post->editing_user_id) {
                     return true;
                 }
                 return false;
             }
-
-            $post->editing_user_id = Auth::id();
-            $post->last_time_request_edit = $now;
-            $post->save();
+            $this->giveRoleEdit($post);
             return true;
         }
     }
@@ -209,22 +211,20 @@ class Post extends Model
      * @param $event_id
      * @return bool
      */
-    public function api_can_me_edit($event_id)
+    public function apiRefreshEdit($event_id)
     {
-        $post = Post::with('category')->find($event_id);
+        $post = Post::lockForUpdate()->where('id', $event_id)->first();
         $now = Date::now()->toDateTime();
-        $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
-        if (is_null($post->editing_user_id) ||
-            is_null($post->last_time_request_edit)
-        ) {
-            return true;
+        if ($post->editing_user_id !== Auth::id() || is_null($post->last_time_request_edit)) {
+            return false;
         } else {
-            if ($last_time_edit < $now && Auth::id() !== $post->editing_user_id) {
-                return false;
+            $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
+            if ($last_time_edit >= $now) {
+                $this->giveRoleEdit($post);
+                return true;
             }
-            return true;
+            return false;
         }
-
     }
 
     /**
@@ -234,7 +234,7 @@ class Post extends Model
      * @param $id
      * @return bool
      */
-    public function update_post($request, $id)
+    public function updatePost($request, $id)
     {
         $post = Post::find($id);
         $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
@@ -279,7 +279,7 @@ class Post extends Model
      * @param $id
      * @return void
      */
-    public function delete_post($id)
+    public function deletePost($id)
     {
         $post = Post::find($id);
         $last_time_edit = Date::createFromDate($post->last_time_request_edit)->addMinutes(5)->toDateTime();
@@ -295,4 +295,17 @@ class Post extends Model
         $post->delete();
     }
 
+    /**
+     * Give role edit
+     *
+     * @param $post
+     * @return void
+     */
+    private function giveRoleEdit($post)
+    {
+        $now = Date::now()->toDateTime();
+        $post->editing_user_id = Auth::id();
+        $post->last_time_request_edit = $now;
+        $post->save();
+    }
 }

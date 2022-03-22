@@ -26,9 +26,9 @@ Route::get('/', function () {
 Route::prefix('admin')->group(function () {
 
     // Admin authenticate
-    Route::get('/login', [AuthController::class, 'get_login'])->name('screen_admin_login');
+    Route::get('/login', [AuthController::class, 'getLogin'])->name('screen_admin_login');
     Route::post('/login', [AuthController::class, 'login'])->name('admin_login');
-    Route::get('/register', [AuthController::class, 'get_register'])->name('screen_admin_register');
+    Route::get('/register', [AuthController::class, 'getRegister'])->name('screen_admin_register');
     Route::post('/register', [AuthController::class, 'register'])->name('admin_register');
 
     Route::group([
@@ -58,20 +58,20 @@ Route::prefix('admin')->group(function () {
 Route::prefix('user')->group(function () {
 
     // User authenticate
-    Route::get('/login', [UserController::class, 'get_login'])->name('screen_user_login');
+    Route::get('/login', [UserController::class, 'getLogin'])->name('screen_user_login');
     Route::post('/login', [UserController::class, 'login'])->name('user_login');
 
     Route::get('/home', [UserController::class, 'index'])->name('screen_user_home');
     Route::get('/posts', [UserController::class, 'posts'])->name('screen_user_list_posts');
-    Route::get('/view-posts/{id}', [UserController::class, 'view_post'])->name('screen_user_view_posts');
+    Route::get('/view-posts/{id}', [UserController::class, 'viewPost'])->name('screen_user_view_posts');
 
     Route::group([
         'middleware' => 'auth:sanctum'
     ], function () {
         Route::get('/logout', [UserController::class, 'logout'])->name('user_logout');
-        Route::get('/get-voucher/{id}', [UserController::class, 'get_voucher'])->name('user_get_voucher');
+        Route::get('/get-voucher/{id}', [UserController::class, 'getVoucher'])->name('user_get_voucher');
     });
 });
 
-Route::get('/send-mail', [SendMailController::class, 'index'])->name('send-mail-3rd');
+Route::get('/send-mail', [SendMailController::class, 'index']);
 

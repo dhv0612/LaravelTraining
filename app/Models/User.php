@@ -73,7 +73,7 @@ class User extends Authenticatable
      * @param $id
      * @return void
      */
-    public function update_last_view_time($id)
+    public function updateLastViewTime($id)
     {
         $now = Date::now()->toDate();
         Post::where('id', $id)->update(['last_view_datetime' => $now]);
@@ -85,7 +85,7 @@ class User extends Authenticatable
      * @param $id
      * @return void
      */
-    public function check_user_read_post($id)
+    public function checkUserReadPost($id)
     {
         if (Auth::check()) {
             $user_read = Read_Posts::where('user_id', Auth::id())->where('post_id', $id)->first();
@@ -105,10 +105,10 @@ class User extends Authenticatable
      * @param $id
      * @return void
      */
-    public function get_voucher($id)
+    public function getVoucherToMe($id)
     {
         $post = Post::find($id);
-        $check_count_voucher = Read_Posts::where('post_id', $id)->where('get_voucher', '1')->count();
+        $check_count_voucher = Read_Posts::lockForUpdate()->where('post_id', $id)->where('get_voucher', '1')->count();
 
         if (Auth::check() &&
             $post->voucher_enabled &&

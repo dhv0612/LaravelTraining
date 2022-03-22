@@ -3,13 +3,15 @@
 namespace App\Jobs;
 
 use App\Mail\MailTo3rdPartyIntegration;
+use App\Models\SendMail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Exception;
 
 class SendMailToUser implements ShouldQueue
 {
@@ -17,16 +19,19 @@ class SendMailToUser implements ShouldQueue
 
     protected $email;
     protected $title;
+    protected $id;
+    private $sendMail;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($email, $title)
+    public function __construct($email, $title, $id)
     {
         $this->email = $email;
         $this->title = $title;
+        $this->id = $id;
     }
 
     /**
@@ -36,6 +41,15 @@ class SendMailToUser implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email)->send(new MailTo3rdPartyIntegration($this->title));
+        $this->sendMail = new SendMail();
+        $status = Config::get('appication.send_mail.status');
+        $this->sendMail->changeStatus($this->id, $status['sending']);
+
+        try{
+            Mail::to($this->email)->send(new MailTo3rdPartyIntegration($this->title));
+            $this->sendMail->changeStatus($this->id, $status['done']);
+        } catch (Exception $e){
+            $this->sendMail->changeStatus($this->id, $status['error'], $e->getMessage());
+        }
     }
 }

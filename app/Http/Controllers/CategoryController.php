@@ -17,7 +17,7 @@ use Psr\Container\NotFoundExceptionInterface;
 class CategoryController extends Controller
 {
     private array $user;
-    private Category $categoty;
+    private Category $category;
 
     /**
      * Constructor
@@ -28,7 +28,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->user = app('config')->get('auth.auth');
-        $this->categoty = new Category();
+        $this->category = new Category();
     }
 
     /**
@@ -38,7 +38,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
         $categories = Category::all();
@@ -52,12 +52,12 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
 
         $categories = Category::all();
-        $tree = $this->categoty->traverse();
+        $tree = $this->category->traverse();
 
         return view('admin.category', compact('categories', 'tree'));
 
@@ -71,7 +71,7 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_home'));
         }
         $category = Category::create([
@@ -136,7 +136,7 @@ class CategoryController extends Controller
      *
      * @return mixed
      */
-    private function get_my_role()
+    private function getMyRole()
     {
         return Auth::user()->role->name;
     }

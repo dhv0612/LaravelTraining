@@ -12,6 +12,8 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Illuminate\Http\JsonResponse;
@@ -43,7 +45,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
         $categories = Category::all();
@@ -60,7 +62,7 @@ class PostController extends Controller
      */
     public function create(Request $request)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
         $categories = Category::all();
@@ -76,10 +78,10 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
-        $this->post_model->add_post($request);
+        $this->post_model->addPost($request);
 
         return redirect(route('screen_list_posts'));
     }
@@ -92,11 +94,11 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
         $post = Post::with('category')->find($id);
-        $check = $this->post_model->check_edit_post($id);
+        $check = $this->post_model->checkEditPost($id);
 
         if (!$check) {
             return redirect(route('screen_list_posts'));
@@ -120,10 +122,10 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
-        $this->post_model->update_post($request, $id);
+        $this->post_model->updatePost($request, $id);
 
         return redirect(route('screen_list_posts'));
     }
@@ -136,10 +138,10 @@ class PostController extends Controller
      */
     public function delete($id)
     {
-        if ($this->get_my_role() !== $this->user['role_admin']) {
+        if ($this->getMyRole() !== $this->user['role_admin']) {
             return redirect(route('screen_admin_home'));
         }
-        $this->post_model->delete_post($id);
+        $this->post_model->deletePost($id);
 
         return redirect()->back();
     }
@@ -152,7 +154,7 @@ class PostController extends Controller
      */
     public function editable($event_id)
     {
-        $check = $this->post_model->api_check_me_edit($event_id);
+        $check = $this->post_model->apiCheckMeEdit($event_id);
         if (!$check) {
             return response()->json([
                 'message' => '',
@@ -177,7 +179,7 @@ class PostController extends Controller
      */
     public function release(Request $request, $event_id)
     {
-        $check = $this->post_model->update_post($request, $event_id);
+        $check = $this->post_model->updatePost($request, $event_id);
         if (!$check) {
             return response()->json([
                 'message' => '',
@@ -194,7 +196,7 @@ class PostController extends Controller
 
     public function maintain($event_id)
     {
-        $check = $this->post_model->api_can_me_edit($event_id);
+        $check = $this->post_model->apiRefreshEdit($event_id);
         if (!$check) {
             return response()->json([
                 'message' => 'Someone is editing',
@@ -215,7 +217,7 @@ class PostController extends Controller
      *
      * @return mixed
      */
-    private function get_my_role()
+    private function getMyRole()
     {
         return Auth::user()->role->name;
     }
